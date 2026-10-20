@@ -138,6 +138,14 @@ function saveBooking() {
   var name = document.getElementById('f-name').value.trim();
   if (!name) { alert('اكتب اسم العروس الأول'); return; }
   var bd = document.getElementById('f-bd').value, td = document.getElementById('f-td').value;
+  var tdDisp = td ? disp(td) : '';
+  if (tdDisp) {
+    var clash = load().filter(function(x){ return x.td === tdDisp; });
+    if (clash.length) {
+      var names = clash.map(function(x){ return x.name; }).join('، ');
+      if (!confirm('⚠️ تنبيه: يوم المناسبة ' + tdDisp + ' فيه حجز موجود أصلًا (' + names + '). هل تريد إضافة الحجز على أي حال؟')) return;
+    }
+  }
   var d = load();
   var id = d.reduce(function(m, b){ return Math.max(m, b.id); }, 0) + 1;
   d.push({ id:id, name:name, bd: bd ? disp(bd) : todaySlash(), td: td ? disp(td) : '',
